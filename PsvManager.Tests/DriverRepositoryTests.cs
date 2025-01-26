@@ -1,101 +1,151 @@
-using Microsoft.EntityFrameworkCore;
-using Moq;
-using PsvManager.Infrastructure.Data.Contexts;
 using PsvManager.Infrastructure.Data.Entities;
-using PsvManager.Infrastructure.Data.Repos;
-using Xunit;
+using PsvManager.Tests.Fixtures;
 
 namespace PsvManager.Tests
 {
+    [Collection("DriverRepositoryTests")]
     public class DriverRepositoryTests
     {
-        //[Fact]
-        //public void Add_ShouldAddEntityToContext()
-        //{
-        //    // Arrange
-        //    var mockOptions = new DbContextOptions<PsvContext>();
-        //    var mockContext = new Mock<PsvContext>(mockOptions);
-        //    var repository = new DriverRepository(mockContext.Object);
-        //    var driver = new Driver();
+        private readonly DriverRepositoryFixture _fixture;
 
-        //    // Act
-        //    repository.Add(driver);
+        public DriverRepositoryTests(DriverRepositoryFixture fixture)
+        {
+            _fixture = fixture;
+        }
 
-        //    // Asserts
-        //    mockContext.Verify(c => c.Add(driver), Times.Once);
-        //}
+        [Fact]
+        public async Task AddDriverAsync_WhereNoDriverExistingFound_AddsDriverToDatabase()
+        {
+            await _fixture.ResetDatabaseAsync();
+            var address = CreateAddress();
+            var driver = CreateDriverWithAddress(address);
 
-        //[Fact]
-        //public void Delete_ShouldRemoveEntityFromContext()
-        //{
-        //    // Arrange
-        //    var mockOptions = new DbContextOptions<PsvContext>();
-        //    var mockContext = new Mock<PsvContext>(mockOptions);
-        //    var repository = new DriverRepository(mockContext.Object);
-        //    var driver = new Driver();
+            var result = await _fixture.DriverRepository.AddAsync(driver);
 
-        //    // Act
-        //    repository.Delete(driver);
+            Assert.Equal("John", result.Forename);
+            Assert.Equal("Doe", result.Surname);
+        }
 
-        //    // Assert
-        //    mockContext.Verify(c => c.Remove(driver), Times.Once);
-        //}
+        [Fact]
+        public async Task DeleteAsync_ShouldRemoveDriver()
+        {
+            await _fixture.ResetDatabaseAsync();
+            var address = CreateAddress();
+            var driver = CreateDriverWithAddress(address);
+            _fixture.Context.Drivers.Add(driver);
+            _fixture.Context.SaveChanges();
 
-        //[Fact]
-        //public void GetById_ShouldReturnEntityFromContext()
-        //{
-        //    // Arrange
-        //    var mockOptions = new DbContextOptions<PsvContext>();
-        //    var mockContext = new Mock<PsvContext>(mockOptions);
-        //    var repository = new DriverRepository(mockContext.Object);
-        //    var driverId = Guid.NewGuid();
-        //    var driver = new Driver { Id = driverId };
-        //    mockContext.Setup(c => c.Find<Driver>(driverId)).Returns(driver);
+            var result = await _fixture.DriverRepository.DeleteAsync(driver.Id);
 
-        //    // Act
-        //    var result = repository.GetById(driverId);
+            Assert.Equal(0, _fixture.Context.Drivers.Count());
+        }
 
-        //    // Assert
-        //    Assert.Equal(driver, result);
-        //}
+        [Fact]
+        public async Task GetAllAsync_ShouldReturnAllDrivers()
+        {
+            await _fixture.ResetDatabaseAsync();
+            var driver1 = CreateDriverWithoutAddress();
+            var driver2 = CreateDriverWithoutAddress();
 
-        //[Fact]
-        //public void Update_ShouldUpdateEntityInContext()
-        //{
-        //    // Arrange
-        //    var mockOptions = new DbContextOptions<PsvContext>();
-        //    var mockContext = new Mock<PsvContext>(mockOptions);
-        //    var repository = new DriverRepository(mockContext.Object);
-        //    var driver = new Driver();
+            _fixture.Context.Drivers.Add(driver1);
+            _fixture.Context.Drivers.Add(driver2);
+            _fixture.Context.SaveChanges();
 
-        //    // Act
-        //    repository.Update(driver);
+            var drivers = await _fixture.DriverRepository.GetAllAsync();
 
-        //    // Assert
-        //    mockContext.Verify(c => c.Update(driver), Times.Once);
-        //}
+            Assert.Equal(2, drivers.Count());
+        }
 
-        //[Fact]
-        //public void GetAll_ShouldReturnAllEntitiesFromContext()
-        //{
-        //    // Arrange
-        //    var mockOptions = new DbContextOptions<PsvContext>();
-        //    var mockContext = new Mock<PsvContext>(mockOptions);
-        //    var repository = new DriverRepository(mockContext.Object);
-        //    var drivers = new List<Driver> { new Driver(), new Driver(), new Driver() };
-        //    var driversQueryable = drivers.AsQueryable();
-        //    var mockSet = new Mock<DbSet<Driver>>();
-        //    mockSet.As<IQueryable<Driver>>().Setup(m => m.Provider).Returns(driversQueryable.Provider);
-        //    mockSet.As<IQueryable<Driver>>().Setup(m => m.Expression).Returns(driversQueryable.Expression);
-        //    mockSet.As<IQueryable<Driver>>().Setup(m => m.ElementType).Returns(driversQueryable.ElementType);
-        //    mockSet.As<IQueryable<Driver>>().Setup(m => m.GetEnumerator()).Returns(driversQueryable.GetEnumerator());
-        //    mockContext.Setup(c => c.Set<Driver>()).Returns(mockSet.Object);
+        [Fact]
+        public async Task GetAllWithAddressAsync_ShouldReturnAllDriversWithAddress()
+        {
+            await _fixture.ResetDatabaseAsync();
+            var address1 = CreateAddress();
+            var driver1 = CreateDriverWithAddress(address1);
+            var address2 = CreateAddress();
+            var driver2 = CreateDriverWithAddress(address2);
 
-        //    // Act
-        //    var result = repository.GetAll();
+            _fixture.Context.Drivers.Add(driver1);
+            _fixture.Context.Drivers.Add(driver2);
+            _fixture.Context.SaveChanges();
 
-        //    // Assert
-        //    Assert.Equal(drivers, result);
-        //}
+            var drivers = await _fixture.DriverRepository.GetAllWithAddressAsync();
+
+            Assert.Equal(2, drivers.Count());
+            Assert.All(drivers, d => Assert.NotNull(d.Address));
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_ShouldReturnDriver()
+        {
+            await _fixture.ResetDatabaseAsync();
+            var address = CreateAddress();
+            var driver = CreateDriverWithAddress(address);
+
+            _fixture.Context.Drivers.Add(driver);
+            _fixture.Context.SaveChanges();
+
+            var result = await _fixture.DriverRepository.GetByIdAsync(driver.Id);
+
+            Assert.NotNull(result);
+            Assert.Equal("John", result.Forename);
+            Assert.Equal("Doe", result.Surname);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldUpdateDriver()
+        {
+            await _fixture.ResetDatabaseAsync();
+            var address = CreateAddress();
+            var driver = CreateDriverWithAddress(address);
+
+            _fixture.Context.Drivers.Add(driver);
+            _fixture.Context.SaveChanges();
+
+            driver.Forename = "John";
+            driver.Surname = "Smith";
+            await _fixture.DriverRepository.UpdateAsync(driver);
+
+            var updatedDriver = _fixture.Context.Drivers.Single();
+
+            Assert.Equal("John", updatedDriver.Forename);
+            Assert.Equal("Smith", updatedDriver.Surname);
+        }
+
+        private Address CreateAddress()
+        {
+            return new Address
+            {
+                Id = Guid.NewGuid(),
+                HouseNumber = "123",
+                StreetName = "Main St",
+                TownOrCity = "Livingston",
+                County = "West Lothian",
+                Postcode = "12345"
+            };
+        }
+
+        private Driver CreateDriverWithAddress(Address address)
+        {
+            return new Driver
+            {
+                Id = Guid.NewGuid(),
+                Forename = "John",
+                Surname = "Doe",
+                LicenseNumber = "Test1234",
+                Address = address
+            };
+        }
+
+        private Driver CreateDriverWithoutAddress()
+        {
+            return new Driver
+            {
+                Id = Guid.NewGuid(),
+                Forename = "John",
+                Surname = "Doe",
+                LicenseNumber = "Test1234"
+            };
+        }
     }
 }
