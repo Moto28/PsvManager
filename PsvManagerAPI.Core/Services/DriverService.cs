@@ -18,7 +18,7 @@ namespace PsvManagerAPI.Core.Services
             _logger = logger;
         }
 
-        public async Task<Result<Driver>> AddDriver(Driver driver)
+        public async Task<Result<Driver>> AddDriverAsync(Driver driver)
         {
             // Check if the driver already exists
             var existingDriver = await _driverRepository.GetByIdAsync(driver.Id);
@@ -33,7 +33,7 @@ namespace PsvManagerAPI.Core.Services
 
                 _logger.LogError($"Driver with id {driver.Id} already exists");
                 return Result<Driver>.Failure(problemDetails);
-            }
+            }           
 
             // Add the new driver
             var result = await _driverRepository.AddAsync(driver);
@@ -49,10 +49,11 @@ namespace PsvManagerAPI.Core.Services
                 _logger.LogError("Error occurred while creating driver");
                 return Result<Driver>.Failure(problemDetails);
             }
+            _logger.LogInformation($"Driver with id {driver.Id} added successfully");
             return Result<Driver>.Success(driver);
         }
 
-        public async Task<Result<bool>> DeleteDriver(Guid id)
+        public async Task<Result<Guid>> DeleteDriverAsync(Guid id)
         {
             var existingDriver = await _driverRepository.GetByIdAsync(id);
             if (existingDriver == null)
@@ -65,7 +66,7 @@ namespace PsvManagerAPI.Core.Services
                 };
 
                 _logger.LogError($"Driver with id {id} not found");
-                return Result<bool>.Failure(problemDetails);
+                return Result<Guid>.Failure(problemDetails);
             }
 
             var result = await _driverRepository.DeleteAsync(id);
@@ -79,12 +80,15 @@ namespace PsvManagerAPI.Core.Services
                 };
 
                 _logger.LogError("Error occurred while deleting driver");
-                return Result<bool>.Failure(problemDetails);
+                return Result<Guid>.Failure(problemDetails);
             }
-            return Result<bool>.Success(true);
+
+            _logger.LogInformation($"Driver with id {id} deleted");
+            return Result<Guid>.Success(result.Id);
         }
 
-        public async Task<Result<IEnumerable<Driver>>> GetAllDrivers()
+
+        public async Task<Result<IEnumerable<Driver>>> GetAllDriversAsync()
         {
             var drivers = await _driverRepository.GetAllAsync();
             if (drivers == null)
@@ -99,10 +103,11 @@ namespace PsvManagerAPI.Core.Services
                 _logger.LogError("Error occurred while retrieving all drivers");
                 return Result<IEnumerable<Driver>>.Failure(problemDetails);
             }
+            _logger.LogInformation($"Get all drivers successful");
             return Result<IEnumerable<Driver>>.Success(drivers);
         }
 
-        public async Task<Result<IEnumerable<Driver>>> GetAllDriversWithAddress()
+        public async Task<Result<IEnumerable<Driver>>> GetAllDriversWithAddressAsync()
         {
             var drivers = await _driverRepository.GetAllWithAddressAsync();
             if (drivers == null)
@@ -117,10 +122,11 @@ namespace PsvManagerAPI.Core.Services
                 _logger.LogError("Error occurred while retrieving all drivers with address");
                 return Result<IEnumerable<Driver>>.Failure(problemDetails);
             }
+            _logger.LogInformation($"All drivers with addresses returned");
             return Result<IEnumerable<Driver>>.Success(drivers);
         }
 
-        public async Task<Result<Driver>> GetDriverById(Guid id)
+        public async Task<Result<Driver>> GetDriverByIdAsync(Guid id)
         {
             var driver = await _driverRepository.GetByIdAsync(id);
             if (driver == null)
@@ -135,22 +141,23 @@ namespace PsvManagerAPI.Core.Services
                 _logger.LogError($"Driver with id {id} not found");
                 return Result<Driver>.Failure(problemDetails);
             }
+            _logger.LogInformation($"Driver with id {id} found");
             return Result<Driver>.Success(driver);
         }
 
-        public async Task<Result<Driver>> UpdateDriver(Guid id, Driver driver)
+        public async Task<Result<Driver>> UpdateDriverAsync(Driver driver)
         {
-            var existingDriver = await _driverRepository.GetByIdAsync(id);
+            var existingDriver = await _driverRepository.GetByIdAsync(driver.Id);
             if (existingDriver == null)
             {
                 var problemDetails = new ProblemDetails
                 {
                     Title = "Driver not found",
-                    Detail = $"Driver with id {id} not found",
+                    Detail = $"Driver with id {driver.Id} not found",
                     Status = 404
                 };
 
-                _logger.LogError($"Driver with id {id} not found");
+                _logger.LogError($"Driver with id {driver.Id} not found");
                 return Result<Driver>.Failure(problemDetails);
             }
 
@@ -168,12 +175,12 @@ namespace PsvManagerAPI.Core.Services
                     Status = 500
                 };
 
-                _logger.LogError($"Error occurred while updating driver with id: {id}");
+                _logger.LogError($"Error occurred while updating driver with id: {driver.Id}");
                 return Result<Driver>.Failure(problemDetails);
             }
-
-            return Result<Driver>.Success(existingDriver);
-        }
+            _logger.LogInformation($"Driver with id {driver.Id} successfully updated.");
+            return Result<Driver>.Success(result);
+        }       
     }
 }
 

@@ -30,7 +30,7 @@ namespace PsvManagerAPI.Controllers
         [SwaggerResponse(500, "If there is a server error")]
         public async Task<IActionResult> GetAllDrivers()
         {
-            var result = await _driverService.GetAllDrivers();
+            var result = await _driverService.GetAllDriversAsync();
             if (!result.IsSuccess)
             {
                 return StatusCode(result.ProblemDetails.Status ?? 500, result.ProblemDetails);
@@ -56,7 +56,7 @@ namespace PsvManagerAPI.Controllers
         [SwaggerResponse(500, "If there is a server error")]
         public async Task<IActionResult> GetAllDriversWithAddress()
         {
-            var result = await _driverService.GetAllDriversWithAddress();
+            var result = await _driverService.GetAllDriversWithAddressAsync();
             if (!result.IsSuccess)
             {
                 return StatusCode(result.ProblemDetails.Status ?? 500, result.ProblemDetails);
@@ -95,7 +95,7 @@ namespace PsvManagerAPI.Controllers
         [SwaggerResponse(500, "If there is a server error")]
         public async Task<IActionResult> GetDriverById(Guid id)
         {
-            var result = await _driverService.GetDriverById(id);
+            var result = await _driverService.GetDriverByIdAsync(id);
             if (!result.IsSuccess)
             {
                 return StatusCode(result.ProblemDetails.Status ?? 500, result.ProblemDetails);
@@ -130,7 +130,7 @@ namespace PsvManagerAPI.Controllers
                 LicenseNumber = driverDto.LicenseNumber
             };
 
-            var result = await _driverService.AddDriver(driver);
+            var result = await _driverService.AddDriverAsync(driver);
             if (!result.IsSuccess)
             {
                 return StatusCode(result.ProblemDetails.Status ?? 500, result.ProblemDetails);
@@ -166,7 +166,7 @@ namespace PsvManagerAPI.Controllers
                 LicenseNumber = driverDto.LicenseNumber
             };
 
-            var result = await _driverService.UpdateDriver(id, driver);
+            var result = await _driverService.UpdateDriverAsync(driver);
             if (!result.IsSuccess)
             {
                 return StatusCode(result.ProblemDetails.Status ?? 500, result.ProblemDetails);
@@ -194,7 +194,7 @@ namespace PsvManagerAPI.Controllers
         [SwaggerResponse(500, "If there is a server error")]
         public async Task<IActionResult> DeleteDriver(Guid id)
         {
-            var result = await _driverService.DeleteDriver(id);
+            var result = await _driverService.DeleteDriverAsync(id);
             if (!result.IsSuccess)
             {
                 return StatusCode(result.ProblemDetails.Status ?? 500, result.ProblemDetails);

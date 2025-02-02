@@ -16,6 +16,8 @@ namespace PsvManager.Infrastructure.Data.Interfaces
         public Task<Driver> GetByIdAsync(Guid id);
         public Task<IEnumerable<Driver>> GetAllAsync();
         public Task<IEnumerable<Driver>> GetAllWithAddressAsync();
+        public Task<Address> GetAddressByIdAsync(Guid id);
+        public Task<Address> AddAddressAsync(Address address);
 
     }
 }

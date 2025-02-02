@@ -8,11 +8,11 @@ namespace PsvManagerAPI.Core.Interfaces
 {
     public interface IDriverService
     {
-        Task<Result<IEnumerable<Driver>>> GetAllDrivers();
-        Task<Result<IEnumerable<Driver>>> GetAllDriversWithAddress();
-        Task<Result<Driver>> GetDriverById(Guid id);
-        Task<Result<Driver>> AddDriver(Driver driver);
-        Task<Result<Driver>> UpdateDriver(Guid id, Driver driver);
-        Task<Result<bool>> DeleteDriver(Guid id);
+        Task<Result<IEnumerable<Driver>>> GetAllDriversAsync();
+        Task<Result<IEnumerable<Driver>>> GetAllDriversWithAddressAsync();
+        Task<Result<Driver>> GetDriverByIdAsync(Guid id);
+        Task<Result<Driver>> AddDriverAsync(Driver driver);
+        Task<Result<Driver>> UpdateDriverAsync(Driver driver);
+        Task<Result<Guid>> DeleteDriverAsync(Guid id);     
     }
 }

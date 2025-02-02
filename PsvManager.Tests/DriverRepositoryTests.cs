@@ -112,6 +112,35 @@ namespace PsvManager.Tests
             Assert.Equal("Smith", updatedDriver.Surname);
         }
 
+        [Fact]
+        public async Task GetAddressByIdAsync_ShouldReturnAddress()
+        {
+            await _fixture.ResetDatabaseAsync();
+            var address = CreateAddress();
+            _fixture.Context.Addresses.Add(address);
+            _fixture.Context.SaveChanges();
+
+            var result = await _fixture.DriverRepository.GetAddressByIdAsync(address.Id);
+
+            Assert.NotNull(result);
+            Assert.Equal("123", result.HouseNumber);
+            Assert.Equal("Main St", result.StreetName);
+        }
+
+        [Fact]
+        public async Task AddAddressAsync_ShouldAddAddressToDatabase()
+        {
+            await _fixture.ResetDatabaseAsync();
+            var address = CreateAddress();
+
+            var result = await _fixture.DriverRepository.AddAddressAsync(address);
+
+            Assert.NotNull(result);
+            Assert.Equal("123", result.HouseNumber);
+            Assert.Equal("Main St", result.StreetName);
+            Assert.Equal(1, _fixture.Context.Addresses.Count());
+        }
+
         private Address CreateAddress()
         {
             return new Address

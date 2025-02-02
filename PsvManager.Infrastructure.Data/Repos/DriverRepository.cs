@@ -50,5 +50,17 @@ namespace PsvManager.Infrastructure.Data.Repos
             await _context.SaveChangesAsync();
             return entity;
         }
+
+        public async Task<Address> GetAddressByIdAsync(Guid id)
+        {
+            return await _context.Addresses.FindAsync(id);
+        }
+
+        public async Task<Address> AddAddressAsync(Address address)
+        {
+            _context.Addresses.Add(address);
+            await _context.SaveChangesAsync();
+            return address;
+        }
     }
 }
