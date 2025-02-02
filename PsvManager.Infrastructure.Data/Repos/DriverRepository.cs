@@ -14,6 +14,21 @@ namespace PsvManager.Infrastructure.Data.Repos
             _context = context;
         }
 
+        public async Task<Driver> AddAsync(Driver entity)
+        {
+            await _context.Drivers.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<Driver> DeleteAsync(Guid id)
+        {
+            var driver = await _context.Drivers.FindAsync(id);
+            _context.Drivers.Remove(driver);
+            await _context.SaveChangesAsync();
+            return driver;
+        }
+
         public async Task<IEnumerable<Driver>> GetAllAsync()
         {
             return await _context.Drivers.ToListAsync();
@@ -24,24 +39,28 @@ namespace PsvManager.Infrastructure.Data.Repos
             return await _context.Drivers.Include(d => d.Address).ToListAsync(); ;
         }
 
-        public Task AddAsync(Driver entity)
+        public async Task<Driver> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.Drivers.FindAsync(id);
         }
 
-        public Task Delete(Driver entity)
+        public async Task<Driver> UpdateAsync(Driver entity)
         {
-            throw new NotImplementedException();
+            _context.Drivers.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<Driver> GetByIdAsync(Guid id)
+        public async Task<Address> GetAddressByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.Addresses.FindAsync(id);
         }
 
-        public Task Update(Driver entity)
+        public async Task<Address> AddAddressAsync(Address address)
         {
-            throw new NotImplementedException();
-        }       
+            _context.Addresses.Add(address);
+            await _context.SaveChangesAsync();
+            return address;
+        }
     }
 }

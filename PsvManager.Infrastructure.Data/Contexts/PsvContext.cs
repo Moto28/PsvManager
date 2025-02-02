@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Protocols;
 using PsvManager.Infrastructure.Data.Entities;
 using System;
@@ -28,28 +29,30 @@ namespace PsvManager.Infrastructure.Data.Contexts
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {            
+        {       
+            //TODO use this to seed data when creating database for the first time
                 // Add your entity configurations here
-                var addressId1 = Guid.NewGuid();
-                var addressId2 = Guid.NewGuid();
+                
+                //var addressId1 = Guid.NewGuid();
+                //var addressId2 = Guid.NewGuid();
 
-                var address1 = new Address { Id = addressId1, HouseNumber = "123", StreetName = "Main St", TownOrCity = "New York", County = null, Postcode = "12345" };
-                var address2 = new Address { Id = addressId2, HouseNumber = "456", StreetName = "Elm St", TownOrCity = "Los Angeles", County = null, Postcode = "67890" };
+                //var address1 = new Address { Id = addressId1, HouseNumber = "123", StreetName = "Main St", TownOrCity = "New York", County = null, Postcode = "12345" };
+                //var address2 = new Address { Id = addressId2, HouseNumber = "456", StreetName = "Elm St", TownOrCity = "Los Angeles", County = null, Postcode = "67890" };
 
-                var driverId1 = Guid.NewGuid();
-                var driverId2 = Guid.NewGuid();
+                //var driverId1 = Guid.NewGuid();
+                //var driverId2 = Guid.NewGuid();
 
-                var driver1 = new Driver { Id = driverId1, Forename = "John", Surname = "Bon Jovi", LicenseNumber = "Test1234", AddressId = addressId1 };
-                var driver2 = new Driver { Id = driverId2, Forename = "Craig", Surname = "Cheney", LicenseNumber = "Test4567", AddressId = addressId2 };
+                //var driver1 = new Driver { Id = driverId1, Forename = "John", Surname = "Bon Jovi", LicenseNumber = "Test1234", AddressId = addressId1 };
+                //var driver2 = new Driver { Id = driverId2, Forename = "Craig", Surname = "Cheney", LicenseNumber = "Test4567", AddressId = addressId2 };
 
-                var vehicle1 = new Vehicle { Id = Guid.NewGuid(), Make = "Toyota", Model = "Camry", Registration = "ABC123", MaxPassengers = 5 };
-                var vehicle2 = new Vehicle { Id = Guid.NewGuid(), Make = "Honda", Model = "Accord", Registration = "DEF456", MaxPassengers = 4 };
+                //var vehicle1 = new Vehicle { Id = Guid.NewGuid(), Make = "Toyota", Model = "Camry", Registration = "ABC123", MaxPassengers = 5 };
+                //var vehicle2 = new Vehicle { Id = Guid.NewGuid(), Make = "Honda", Model = "Accord", Registration = "DEF456", MaxPassengers = 4 };
 
-                modelBuilder.Entity<Address>().HasData(address1, address2);
-                modelBuilder.Entity<Driver>().HasData(driver1, driver2);
-                modelBuilder.Entity<Vehicle>().HasData(vehicle1, vehicle2);
+                //modelBuilder.Entity<Address>().HasData(address1, address2);
+                //modelBuilder.Entity<Driver>().HasData(driver1, driver2);
+                //modelBuilder.Entity<Vehicle>().HasData(vehicle1, vehicle2);
          
-                base.OnModelCreating(modelBuilder);
+                //base.OnModelCreating(modelBuilder);
         }
     }
 }

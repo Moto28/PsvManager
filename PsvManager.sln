@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PsvManager.Shared", "PsvMan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PsvManager.Infrastructure.Data", "PsvManager.Infrastructure.Data\PsvManager.Infrastructure.Data.csproj", "{19B0BFCC-D5E1-4969-81E9-A8A44D18B29A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PsvManager.Tests", "PsvManager.Tests\PsvManager.Tests.csproj", "{AEFCC1D2-C9F8-4512-8FA8-C94EFAB554C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PsvManager.Tests", "PsvManager.Tests\PsvManager.Tests.csproj", "{4ADE1AAA-116D-44B8-AA78-60616ED20B14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{19B0BFCC-D5E1-4969-81E9-A8A44D18B29A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19B0BFCC-D5E1-4969-81E9-A8A44D18B29A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19B0BFCC-D5E1-4969-81E9-A8A44D18B29A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AEFCC1D2-C9F8-4512-8FA8-C94EFAB554C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEFCC1D2-C9F8-4512-8FA8-C94EFAB554C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AEFCC1D2-C9F8-4512-8FA8-C94EFAB554C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AEFCC1D2-C9F8-4512-8FA8-C94EFAB554C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4ADE1AAA-116D-44B8-AA78-60616ED20B14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ADE1AAA-116D-44B8-AA78-60616ED20B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4ADE1AAA-116D-44B8-AA78-60616ED20B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ADE1AAA-116D-44B8-AA78-60616ED20B14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

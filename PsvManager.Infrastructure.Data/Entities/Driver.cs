@@ -7,6 +7,6 @@
         public string Surname { get; set;}
         public string LicenseNumber { get; set; }
         public Guid AddressId { get; set; }
-        public Address Address { get; set; }
+        public Address? Address { get; set; }
     }
 }

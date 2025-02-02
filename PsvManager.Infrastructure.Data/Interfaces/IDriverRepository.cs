@@ -10,11 +10,14 @@ namespace PsvManager.Infrastructure.Data.Interfaces
 {
     public interface IDriverRepository
     {
-        public Task AddAsync(Driver entity);
-        public Task Delete(Driver entity);   
-        public Task Update(Driver entity);
+        public Task<Driver> AddAsync(Driver entity);
+        public Task<Driver> DeleteAsync(Guid entity);   
+        public Task<Driver> UpdateAsync(Driver entity);
+        public Task<Driver> GetByIdAsync(Guid id);
         public Task<IEnumerable<Driver>> GetAllAsync();
         public Task<IEnumerable<Driver>> GetAllWithAddressAsync();
+        public Task<Address> GetAddressByIdAsync(Guid id);
+        public Task<Address> AddAddressAsync(Address address);
 
     }
 }
