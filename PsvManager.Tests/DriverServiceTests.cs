@@ -26,7 +26,7 @@ namespace PsvManager.Tests
             // Arrange
             var driver = CreateDriver();
             _mockDriverRepository.Setup(repo => repo.GetByIdAsync(driver.Id))
-                .ReturnsAsync((Driver)null);
+                .ReturnsAsync((Driver?)null);
             _mockDriverRepository.Setup(repo => repo.AddAsync(driver))
                 .ReturnsAsync(driver);
 
@@ -44,7 +44,7 @@ namespace PsvManager.Tests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"Driver with id {driver.Id} added successfully")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
         [Fact]
@@ -60,8 +60,8 @@ namespace PsvManager.Tests
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(409, result.ProblemDetails.Status);
-            Assert.Equal($"Driver with id {driver.Id} already exists", result.ProblemDetails.Detail);
+            Assert.Equal(409, result.ProblemDetails?.Status);
+            Assert.Equal($"Driver with id {driver.Id} already exists", result.ProblemDetails?.Detail);
 
             _mockDriverRepository.Verify(repo => repo.GetByIdAsync(driver.Id), Times.Once);
             _mockDriverRepository.Verify(repo => repo.AddAsync(It.IsAny<Driver>()), Times.Never);
@@ -70,7 +70,7 @@ namespace PsvManager.Tests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"Driver with id {driver.Id} already exists")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
         [Fact]
@@ -79,17 +79,17 @@ namespace PsvManager.Tests
             // Arrange
             var driver = CreateDriver();
             _mockDriverRepository.Setup(repo => repo.GetByIdAsync(driver.Id))
-                .ReturnsAsync((Driver)null);
+                .ReturnsAsync((Driver?)null);
             _mockDriverRepository.Setup(repo => repo.AddAsync(driver))
-                .ReturnsAsync((Driver)null);
+                .ReturnsAsync((Driver?)null);
 
             // Act
             var result = await _driverService.AddDriverAsync(driver);
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(500, result.ProblemDetails.Status);
-            Assert.Equal("Failed to add driver to the repository", result.ProblemDetails.Detail);
+            Assert.Equal(500, result.ProblemDetails?.Status);
+            Assert.Equal("Failed to add driver to the repository", result.ProblemDetails?.Detail);
 
             _mockDriverRepository.Verify(repo => repo.GetByIdAsync(driver.Id), Times.Once);
             _mockDriverRepository.Verify(repo => repo.AddAsync(driver), Times.Once);
@@ -98,7 +98,7 @@ namespace PsvManager.Tests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error occurred while creating driver")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
         [Fact]
@@ -111,8 +111,8 @@ namespace PsvManager.Tests
 
             _mockDriverRepository.Setup(repo => repo.GetByIdAsync(driverId))
                 .ReturnsAsync(driver);
-            _mockDriverRepository.Setup(repo => repo.DeleteAsync(driverId))
-                .ReturnsAsync(driver);
+            _mockDriverRepository.Setup(repo => repo.DeleteAsync(driver))
+                .ReturnsAsync(driverId);
 
             // Act
             var result = await _driverService.DeleteDriverAsync(driverId);
@@ -122,13 +122,13 @@ namespace PsvManager.Tests
             Assert.Equal(driverId, result.Value);
 
             _mockDriverRepository.Verify(repo => repo.GetByIdAsync(driverId), Times.Once);
-            _mockDriverRepository.Verify(repo => repo.DeleteAsync(driverId), Times.Once);
+            _mockDriverRepository.Verify(repo => repo.DeleteAsync(driver), Times.Once);
             _logger.Verify(logger => logger.Log(
                 LogLevel.Information,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"Driver with id {driverId} deleted")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
         [Fact]
@@ -138,24 +138,24 @@ namespace PsvManager.Tests
             var driverId = Guid.NewGuid();
 
             _mockDriverRepository.Setup(repo => repo.GetByIdAsync(driverId))
-                .ReturnsAsync((Driver)null);
+                .ReturnsAsync((Driver?)null);
 
             // Act
             var result = await _driverService.DeleteDriverAsync(driverId);
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(404, result.ProblemDetails.Status);
-            Assert.Equal($"Driver with id {driverId} not found", result.ProblemDetails.Detail);
+            Assert.Equal(404, result.ProblemDetails?.Status);
+            Assert.Equal($"Driver with id {driverId} not found", result.ProblemDetails?.Detail);
 
             _mockDriverRepository.Verify(repo => repo.GetByIdAsync(driverId), Times.Once);
-            _mockDriverRepository.Verify(repo => repo.DeleteAsync(driverId), Times.Never);
+            _mockDriverRepository.Verify(repo => repo.DeleteAsync(It.IsAny<Driver>()), Times.Never);
             _logger.Verify(logger => logger.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"Driver with id {driverId} not found")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
         [Fact]
@@ -246,7 +246,7 @@ namespace PsvManager.Tests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"Driver with id {updatedDriver.Id} successfully updated.")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
         [Fact]
@@ -261,15 +261,15 @@ namespace PsvManager.Tests
             _mockDriverRepository.Setup(repo => repo.GetByIdAsync(driver.Id))
                 .ReturnsAsync(driver);
             _mockDriverRepository.Setup(repo => repo.UpdateAsync(It.IsAny<Driver>()))
-                .ReturnsAsync((Driver)null);
+                .ReturnsAsync((Driver?)null);
 
             // Act
             var result = await _driverService.UpdateDriverAsync(updatedDriver);
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(500, result.ProblemDetails.Status);
-            Assert.Equal("Failed to update driver in the repository", result.ProblemDetails.Detail);
+            Assert.Equal(500, result.ProblemDetails?.Status);
+            Assert.Equal("Failed to update driver in the repository", result.ProblemDetails?.Detail);
 
             _mockDriverRepository.Verify(repo => repo.GetByIdAsync(driver.Id), Times.Once);
             _mockDriverRepository.Verify(repo => repo.UpdateAsync(It.IsAny<Driver>()), Times.Once);
@@ -278,7 +278,7 @@ namespace PsvManager.Tests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error occurred while updating driver")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
         [Fact]
@@ -287,15 +287,15 @@ namespace PsvManager.Tests
             // Arrange
             var updatedDriver = CreateDriver();
             _mockDriverRepository.Setup(repo => repo.GetByIdAsync(updatedDriver.Id))
-                .ReturnsAsync((Driver)null);
+                .ReturnsAsync((Driver?)null);
 
             // Act
             var result = await _driverService.UpdateDriverAsync(updatedDriver);
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(404, result.ProblemDetails.Status);
-            Assert.Equal($"Driver with id {updatedDriver.Id} not found", result.ProblemDetails.Detail);
+            Assert.Equal(404, result.ProblemDetails?.Status);
+            Assert.Equal($"Driver with id {updatedDriver.Id} not found", result.ProblemDetails?.Detail);
 
             _mockDriverRepository.Verify(repo => repo.GetByIdAsync(updatedDriver.Id), Times.Once);
             _mockDriverRepository.Verify(repo => repo.UpdateAsync(It.IsAny<Driver>()), Times.Never);
@@ -304,7 +304,7 @@ namespace PsvManager.Tests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"Driver with id {updatedDriver.Id} not found")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
         [Fact]
@@ -329,15 +329,15 @@ namespace PsvManager.Tests
         {
             // Arrange
             _mockDriverRepository.Setup(repo => repo.GetAllWithAddressAsync())
-                .ReturnsAsync((IEnumerable<Driver>)null);
+                .ReturnsAsync((IEnumerable<Driver>?)null);
 
             // Act
             var result = await _driverService.GetAllDriversWithAddressAsync();
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(500, result.ProblemDetails.Status);
-            Assert.Equal("Failed to retrieve drivers with address from the repository", result.ProblemDetails.Detail);
+            Assert.Equal(500, result.ProblemDetails?.Status);
+            Assert.Equal("Failed to retrieve drivers with address from the repository", result.ProblemDetails?.Detail);
 
             _mockDriverRepository.Verify(repo => repo.GetAllWithAddressAsync(), Times.Once);
             _logger.Verify(logger => logger.Log(
@@ -345,7 +345,7 @@ namespace PsvManager.Tests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error occurred while retrieving all drivers with address")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
         [Fact]
@@ -353,15 +353,15 @@ namespace PsvManager.Tests
         {
             // Arrange
             _mockDriverRepository.Setup(repo => repo.GetAllAsync())
-                .ReturnsAsync((IEnumerable<Driver>)null);
+                .ReturnsAsync((IEnumerable<Driver>?)null);
 
             // Act
             var result = await _driverService.GetAllDriversAsync();
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(500, result.ProblemDetails.Status);
-            Assert.Equal("Failed to retrieve drivers from the repository", result.ProblemDetails.Detail);
+            Assert.Equal(500, result.ProblemDetails?.Status);
+            Assert.Equal("Failed to retrieve drivers from the repository", result.ProblemDetails?.Detail);
 
             _mockDriverRepository.Verify(repo => repo.GetAllAsync(), Times.Once);
             _logger.Verify(logger => logger.Log(
@@ -369,7 +369,7 @@ namespace PsvManager.Tests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error occurred while retrieving all drivers")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
         [Fact]
@@ -382,25 +382,26 @@ namespace PsvManager.Tests
 
             _mockDriverRepository.Setup(repo => repo.GetByIdAsync(driverId))
                 .ReturnsAsync(driver);
-            _mockDriverRepository.Setup(repo => repo.DeleteAsync(driverId))
-                .ReturnsAsync((Driver)null);
+
+            _mockDriverRepository.Setup(repo => repo.DeleteAsync(driver))
+                .ReturnsAsync(Guid.Empty); // Simulate failure
 
             // Act
             var result = await _driverService.DeleteDriverAsync(driverId);
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(500, result.ProblemDetails.Status);
-            Assert.Equal("Failed to delete driver from the repository", result.ProblemDetails.Detail);
+            Assert.Equal(500, result.ProblemDetails?.Status);
+            Assert.Equal("Failed to delete driver from the repository", result.ProblemDetails?.Detail);
 
             _mockDriverRepository.Verify(repo => repo.GetByIdAsync(driverId), Times.Once);
-            _mockDriverRepository.Verify(repo => repo.DeleteAsync(driverId), Times.Once);
+            _mockDriverRepository.Verify(repo => repo.DeleteAsync(driver), Times.Once);
             _logger.Verify(logger => logger.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error occurred while deleting driver")),
                 null,
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
         }
 
         private Driver CreateDriver()

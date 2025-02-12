@@ -1,42 +1,49 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PsvManager.Infrastructure.Data.Contexts;
+using PsvManager.Infrastructure.Data.Interfaces;
 
 namespace PsvManager.Infrastructure.Data.Repos
 {
-    public abstract class BaseRepository<T> where T : class
+    public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        //private readonly PsvContext _psvContext;
+        private readonly PsvContext _psvContext;
+        private readonly DbSet<T> _dbSet;
 
-        //public BaseRepository(PsvContext psvContext)
-        //{
-        //    _psvContext = psvContext ?? throw new ArgumentNullException(nameof(psvContext));
-        //}
+        protected BaseRepository(PsvContext psvContext)
+        {
+            _psvContext = psvContext ?? throw new ArgumentNullException(nameof(psvContext));
+            _dbSet = _psvContext.Set<T>();
+        }
 
-        //public async Task AddAsync(T entity)
-        //{
-        //    await _psvContext.AddAsync(entity);
-        //}
+        public async Task<T> AddAsync(T entity)
+        {
+            await _dbSet.AddAsync(entity);
+            await _psvContext.SaveChangesAsync();
+            return entity;
+        }
 
-        //public async Task Delete(T entity)
-        //{
-        //    _psvContext.Remove(entity);
-        //    await _psvContext.SaveChangesAsync();
-        //}
+        public async Task<Guid> DeleteAsync(T entity)
+        {
+            _dbSet.Remove(entity);
+            await _psvContext.SaveChangesAsync();
+            return entity.GetType().GetProperty("Id")?.GetValue(entity) as Guid? ?? Guid.Empty;
+        }
 
-        //public async Task<T?> GetByIdAsync(Guid id)
-        //{
-        //    return await _psvContext.FindAsync<T>(id);
-        //}
+        public async Task<T?> GetByIdAsync(Guid id)
+        {
+            return await _dbSet.FindAsync(id);
+        }
 
-        //public async Task Update(T entity)
-        //{
-        //    _psvContext.Update(entity);
-        //    await _psvContext.SaveChangesAsync();
-        //}
+        public async Task<T> UpdateAsync(T entity)
+        {
+            _dbSet.Update(entity);
+            await _psvContext.SaveChangesAsync();
+            return entity;
+        }
 
-        //public async Task<IEnumerable<T>> GetAllAsync()
-        //{
-        //    return await _psvContext.Set<T>().ToListAsync();
-        //}
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
     }
 }
