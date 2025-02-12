@@ -35,7 +35,7 @@ namespace PsvManager.Tests
             _fixture.Context.Drivers.Add(driver);
             _fixture.Context.SaveChanges();
 
-            var result = await _fixture.DriverRepository.DeleteAsync(driver.Id);
+            var result = await _fixture.DriverRepository.DeleteAsync(driver);
 
             Assert.Equal(0, _fixture.Context.Drivers.Count());
         }

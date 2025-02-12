@@ -15,16 +15,18 @@ namespace PsvManager.Infrastructure.Data.Repos
             _dbSet = _psvContext.Set<T>();
         }
 
-        public async Task AddAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
             await _psvContext.SaveChangesAsync();
+            return entity;
         }
 
-        public async Task Delete(T entity)
+        public async Task<Guid> DeleteAsync(T entity)
         {
             _dbSet.Remove(entity);
             await _psvContext.SaveChangesAsync();
+            return entity.GetType().GetProperty("Id")?.GetValue(entity) as Guid? ?? Guid.Empty;
         }
 
         public async Task<T?> GetByIdAsync(Guid id)
@@ -32,10 +34,11 @@ namespace PsvManager.Infrastructure.Data.Repos
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task Update(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
             await _psvContext.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()

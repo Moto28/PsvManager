@@ -69,8 +69,8 @@ namespace PsvManagerAPI.Core.Services
                 return Result<Guid>.Failure(problemDetails);
             }
 
-            var result = await _driverRepository.DeleteAsync(id);
-            if (result == null)
+            var deletedDriverId = await _driverRepository.DeleteAsync(existingDriver);
+            if (deletedDriverId == Guid.Empty || deletedDriverId != id)
             {
                 var problemDetails = new ProblemDetails
                 {
@@ -84,7 +84,7 @@ namespace PsvManagerAPI.Core.Services
             }
 
             _logger.LogInformation($"Driver with id {id} deleted");
-            return Result<Guid>.Success(result.Id);
+            return Result<Guid>.Success(deletedDriverId);
         }
 
 

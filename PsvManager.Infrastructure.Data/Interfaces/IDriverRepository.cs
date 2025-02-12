@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PsvManager.Infrastructure.Data.Interfaces
 {
-    public interface IDriverRepository
+    public interface IDriverRepository : IBaseRepository<Driver>
     {       
         public Task<IEnumerable<Driver>> GetAllWithAddressAsync();
         public Task<Address> GetAddressByIdAsync(Guid id);
