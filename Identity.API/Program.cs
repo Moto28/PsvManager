@@ -48,6 +48,9 @@ builder.Services.AddAuthentication(options =>
 
 // Register application services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
