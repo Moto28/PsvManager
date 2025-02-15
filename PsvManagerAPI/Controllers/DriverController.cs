@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PsvManager.Infrastructure.Data.Entities;
 using PsvManager.Shared.DTO.Address;
@@ -7,6 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace PsvManagerAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api")]
     public class DriverController : ControllerBase
