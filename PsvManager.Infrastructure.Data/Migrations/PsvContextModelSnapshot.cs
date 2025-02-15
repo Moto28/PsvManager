@@ -17,7 +17,7 @@ namespace PsvManager.Infrastructure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -50,24 +50,6 @@ namespace PsvManager.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Addresses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("0e44a463-3b65-4b2c-81eb-52bc0e2b51c5"),
-                            HouseNumber = "123",
-                            Postcode = "12345",
-                            StreetName = "Main St",
-                            TownOrCity = "New York"
-                        },
-                        new
-                        {
-                            Id = new Guid("34740eca-cd06-4c20-a354-fc870d447ace"),
-                            HouseNumber = "456",
-                            Postcode = "67890",
-                            StreetName = "Elm St",
-                            TownOrCity = "Los Angeles"
-                        });
                 });
 
             modelBuilder.Entity("PsvManager.Infrastructure.Data.Entities.Driver", b =>
@@ -96,24 +78,6 @@ namespace PsvManager.Infrastructure.Data.Migrations
                     b.HasIndex("AddressId");
 
                     b.ToTable("Drivers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("b7e666b4-7c36-4b11-91d7-67ccf41e182f"),
-                            AddressId = new Guid("0e44a463-3b65-4b2c-81eb-52bc0e2b51c5"),
-                            Forename = "John",
-                            LicenseNumber = "Test1234",
-                            Surname = "Bon Jovi"
-                        },
-                        new
-                        {
-                            Id = new Guid("8d9f847c-a995-471d-8fc1-f67531abce97"),
-                            AddressId = new Guid("34740eca-cd06-4c20-a354-fc870d447ace"),
-                            Forename = "Craig",
-                            LicenseNumber = "Test4567",
-                            Surname = "Cheney"
-                        });
                 });
 
             modelBuilder.Entity("PsvManager.Infrastructure.Data.Entities.Vehicle", b =>
@@ -140,24 +104,6 @@ namespace PsvManager.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Vehicles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ec409082-19da-43c7-8570-92ce7f68e513"),
-                            Make = "Toyota",
-                            MaxPassengers = 5,
-                            Model = "Camry",
-                            Registration = "ABC123"
-                        },
-                        new
-                        {
-                            Id = new Guid("3fa9b0c4-ac4b-431e-8684-64c878af9d29"),
-                            Make = "Honda",
-                            MaxPassengers = 4,
-                            Model = "Accord",
-                            Registration = "DEF456"
-                        });
                 });
 
             modelBuilder.Entity("PsvManager.Infrastructure.Data.Entities.Driver", b =>
