@@ -1,0 +1,54 @@
+﻿@page "/login"
+@using Identity.UI.Shared.Models
+@using Identity.UI.Shared.Auth 
+@inject NavigationManager Navigation
+@inject ApiAuthenticationStateProvider AuthenticationStateProvider
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="username">Username:</label>
+        <InputText id="username" @bind-Value="loginModel.Username" />
+        <ValidationMessage For="@(() => loginModel.Username)" />
+    </div>
+
+    <div>
+        <label for="password">Password:</label>
+        <InputText id="password" type="password" @bind-Value="loginModel.Password" />
+        <ValidationMessage For="@(() => loginModel.Password)" />
+    </div>
+
+    <button type="submit">Login</button>
+</EditForm>
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+
+    private async Task HandleValidSubmit()
+    {
+        bool isAuthenticated = await AuthenticateUser(loginModel);
+
+        if (isAuthenticated)
+        {
+            if (AuthenticationStateProvider is ApiAuthenticationStateProvider apiAuthStateProvider)
+            {
+                string token = "your_jwt_token"; // Replace with actual token from your API
+                await apiAuthStateProvider.MarkUserAsAuthenticated(token);
+            }
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            // Handle failed login attempt
+        }
+    }
+
+    private Task<bool> AuthenticateUser(LoginModel loginModel)
+    {
+        // Implement your authentication logic here
+        // For demonstration purposes, we're using dummy validation
+        return Task.FromResult(loginModel.Username == "test" && loginModel.Password == "password");
+    }
+}

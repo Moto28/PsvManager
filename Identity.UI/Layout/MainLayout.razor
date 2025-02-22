@@ -1,0 +1,16 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<CascadingValue Value="_authenticationState">
+    @Body
+</CascadingValue>
+
+@code {
+    private AuthenticationState? _authenticationState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    }
+}
